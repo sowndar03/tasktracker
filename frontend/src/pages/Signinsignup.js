@@ -42,10 +42,10 @@ const Signinsignup = () => {
     setName(e.target.value);
   };
 
-  const handleRegisterValue = async (e) => {
-    e.preventDefault();
+  const handleRegisterValue = async () => {
     const validationErrors = validate();
-    console.log(email);
+    console.log("Email: ", email);
+  
     if (Object.keys(validationErrors).length === 0) {
       try {
         const response = await Axios.post("http://localhost:3987/register", {
@@ -53,7 +53,7 @@ const Signinsignup = () => {
           email,
           password,
         });
-        console.log("Registration Successfull", response.data);
+        console.log("Registration Successful", response.data);
         setEmail("");
         setName("");
         setPassword("");
@@ -61,19 +61,20 @@ const Signinsignup = () => {
       } catch (error) {
         console.error("Registration failed", error);
         if (error.response && error.response.data) {
-          setErrors({ serverError: error.response.data });
-          setEmail("");
-          setName("");
-          setPassword("");
+          setErrors({ serverError: error.response.data.message || error.response.data.error });
         } else {
-          setErrors({ serverError: "Unknown Error Occured!" });
+          setErrors({ serverError: "Unknown Error Occurred!" });
         }
+        setEmail("");
+        setName("");
+        setPassword("");
       }
     } else {
       setErrors(validationErrors);
     }
   };
-
+  
+  
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -132,7 +133,7 @@ const Signinsignup = () => {
           >
             Register
           </h1>
-          <form>
+          <div>
             <div className={`${errors.name ? "my-0" : "my-1"} relative`}>
               <label
                 htmlFor="name"
@@ -214,7 +215,7 @@ const Signinsignup = () => {
                 Register
               </button>
             </div>
-          </form>
+          </div>
         </div>
         <div
           id="login"
@@ -232,7 +233,7 @@ const Signinsignup = () => {
           >
             Login
           </h1>
-          <form className="space-y-3 p-4">
+          <div className="space-y-3 p-4">
             <div className="relative">
               <label
                 htmlFor="email"
@@ -290,7 +291,7 @@ const Signinsignup = () => {
                 Login
               </button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
